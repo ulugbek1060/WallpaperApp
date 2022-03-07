@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/nav_graph"
+  app:startDestination="@id/newPhotoFragment">
+
+  <fragment
+    android:id="@+id/searchFragment"
+    android:name="com.example.pagingwallpaperapp.ui.search.SearchFragment"
+    android:label="Search"
+    tools:layout="@layout/fragment_search" >
+    <action
+      android:id="@+id/action_galleryFragment_to_detailFragment"
+      app:destination="@id/detailFragment" />
+  </fragment>
+  <fragment
+    android:id="@+id/detailFragment"
+    android:name="com.example.pagingwallpaperapp.ui.detail.DetailFragment"
+    android:label="Photo"
+    tools:layout="@layout/fragment_detail" >
+    <argument
+      android:name="unsplashPhoto"
+      app:argType="com.example.pagingwallpaperapp.data.UnsplashPhoto" />
+  </fragment>
+  <fragment
+    android:id="@+id/newPhotoFragment"
+    android:name="com.example.pagingwallpaperapp.ui.newphotos.NewPhotoFragment"
+    android:label="Photos"
+    tools:layout="@layout/fragment_new_photos" >
+    <action
+      android:id="@+id/action_newPhotoFragment_to_detailFragment"
+      app:destination="@id/detailFragment" />
+  </fragment>
+</navigation>

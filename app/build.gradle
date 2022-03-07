@@ -1,0 +1,74 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'kotlin-parcelize'
+    id 'dagger.hilt.android.plugin'
+    id 'androidx.navigation.safeargs.kotlin'
+}
+
+android {
+    compileSdk 32
+
+    defaultConfig {
+        applicationId "com.example.pagingwallpaperapp"
+        minSdk 23
+        targetSdk 32
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "UNSPLASH_ACCES_KEY", unsplash_acces_key)
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    viewBinding.enabled = true
+}
+
+dependencies {
+    implementation libs.coreKtx
+    implementation libs.appcompat
+    implementation libs.material
+    implementation libs.constraintLayout
+    implementation libs.daggerHiltLifecycle
+    implementation libs.daggerHilt
+    kapt libs.kaptHiltCompiler
+    kapt libs.kaptHilt
+    implementation libs.fragmentKtx
+    implementation libs.lifecycleLiveDataKtx
+    implementation libs.lifecycleViewmodelKtx
+    implementation libs.viewModelSavedState
+    implementation libs.navigationRuneTimeKtx
+    implementation libs.navigationFragmentKtx
+    implementation libs.navigationUiKtk
+    implementation libs.coroutinesAndroid
+    implementation libs.coroutinesCore
+    implementation libs.datastore
+    implementation libs.fragmentBindingDelegate
+    implementation libs.paging3
+    implementation libs.glide
+    annotationProcessor libs.glideCompiler
+    implementation libs.retrofit
+    implementation libs.retrofitGsonConverter
+    implementation libs.roundedImageView
+    implementation 'com.artjimlop:altex-image-downloader:0.0.4'
+
+
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+}
