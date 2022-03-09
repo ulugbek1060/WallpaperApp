@@ -6,10 +6,42 @@
   android:orientation="vertical"
   tools:context=".ui.search.SearchFragment">
 
+  <LinearLayout
+    android:id="@+id/layout_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/purple_500"
+    android:orientation="horizontal"
+    android:visibility="gone"
+    tools:visibility="visible">
+
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/recycler_view_query"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="4dp"
+      android:layout_weight="1"
+      android:orientation="horizontal"
+      tools:listitem="@layout/item_query" />
+
+    <TextView
+      android:id="@+id/text_view_clear"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_margin="4dp"
+      android:padding="10dp"
+      android:text="clear"
+      android:textColor="@color/white"
+      android:textSize="15sp" />
+
+  </LinearLayout>
+
+
   <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/recycler_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_below="@id/layout_container"
     tools:listitem="@layout/item_unsplash_photo" />
 
   <ProgressBar

@@ -14,15 +14,19 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.pagingwallpaperapp.R
-import com.example.pagingwallpaperapp.data.DataPagingAdapter
-import com.example.pagingwallpaperapp.data.PhotoLoadStateAdapter
 import com.example.pagingwallpaperapp.data.UnsplashPhoto
+import com.example.pagingwallpaperapp.data.adapters.DataPagingAdapter
+import com.example.pagingwallpaperapp.data.adapters.PhotoLoadStateAdapter
+import com.example.pagingwallpaperapp.data.adapters.QueryCacheAdapter
+import com.example.pagingwallpaperapp.data.querydata.QueryData
 import com.example.pagingwallpaperapp.databinding.FragmentSearchBinding
 import com.example.pagingwallpaperapp.util.RenderScriptProvider
 import dagger.hilt.android.AndroidEntryPoint
 
+
 @AndroidEntryPoint
-class SearchFragment : Fragment(R.layout.fragment_search), DataPagingAdapter.OnItemClickListener {
+class SearchFragment : Fragment(R.layout.fragment_search), DataPagingAdapter.OnItemClickListener,
+  QueryCacheAdapter.OnItemClickQuery {
 
   private val binding by viewBinding(FragmentSearchBinding::bind)
   private val viewModel: SearchViewModel by viewModels()
@@ -37,12 +41,22 @@ class SearchFragment : Fragment(R.layout.fragment_search), DataPagingAdapter.OnI
       renderScriptProvider
     )
   }
+  private val queryAdapter: QueryCacheAdapter by lazy {
+    QueryCacheAdapter(this)
+  }
+
   private lateinit var searchView: SearchView
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
     binding.apply {
+      recyclerViewQuery.apply {
+        adapter = queryAdapter
+        layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        setHasFixedSize(true)
+        itemAnimator = null
+      }
 
       recyclerView.apply {
         adapter = dataAdapter.withLoadStateHeaderAndFooter(
@@ -80,8 +94,20 @@ class SearchFragment : Fragment(R.layout.fragment_search), DataPagingAdapter.OnI
         } else {
           textViewEmpty.isVisible = false
         }
+
+        textViewClear.setOnClickListener {
+          requestFocusToSearchView("")
+          viewModel.clearQueryList()
+        }
+
+        viewModel.getQueryList.observe(viewLifecycleOwner) {
+          layoutContainer.isVisible = it.isNotEmpty()
+          queryAdapter.submitList(it)
+        }
       }
     }
+
+
 
     setHasOptionsMenu(true)
   }
@@ -93,6 +119,7 @@ class SearchFragment : Fragment(R.layout.fragment_search), DataPagingAdapter.OnI
     val itemSearch = menu.findItem(R.id.action_search)
     searchView = itemSearch.actionView as SearchView
     searchView.setOnQueryTextListener(searchListener)
+
   }
 
   private val searchListener = object : SearchView.OnQueryTextListener {
@@ -101,6 +128,7 @@ class SearchFragment : Fragment(R.layout.fragment_search), DataPagingAdapter.OnI
         binding.recyclerView.scrollToPosition(0)
         viewModel.searchPhoto(query)
         searchView.clearFocus()
+        viewModel.insertQuery(QueryData(query))
       }
       return true
     }
@@ -122,5 +150,14 @@ class SearchFragment : Fragment(R.layout.fragment_search), DataPagingAdapter.OnI
   override fun onItemClick(unsplashPhoto: UnsplashPhoto) {
     val action = SearchFragmentDirections.actionGalleryFragmentToDetailFragment(unsplashPhoto)
     findNavController().navigate(action)
+  }
+
+  override fun onItemClick(query: QueryData) {
+    requestFocusToSearchView(query.text)
+  }
+
+  private fun requestFocusToSearchView(text: String) {
+    searchView.requestFocus()
+    searchView.setQuery(text, true)
   }
 }

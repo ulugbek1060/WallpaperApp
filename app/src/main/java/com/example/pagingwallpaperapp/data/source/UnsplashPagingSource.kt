@@ -1,9 +1,10 @@
-package com.example.pagingwallpaperapp.data
+package com.example.pagingwallpaperapp.data.source
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.pagingwallpaperapp.api.UnsplashApi
 import com.example.pagingwallpaperapp.api.UnsplashApi.Companion.POPULAR
+import com.example.pagingwallpaperapp.data.UnsplashPhoto
 import retrofit2.HttpException
 import java.io.IOException
 

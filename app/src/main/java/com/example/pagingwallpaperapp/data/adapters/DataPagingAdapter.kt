@@ -1,4 +1,4 @@
-package com.example.pagingwallpaperapp.data
+package com.example.pagingwallpaperapp.data.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.pagingwallpaperapp.R
+import com.example.pagingwallpaperapp.data.UnsplashPhoto
 import com.example.pagingwallpaperapp.databinding.ItemUnsplashPhotoBinding
 import com.example.pagingwallpaperapp.util.RenderScriptBlur
 import com.example.pagingwallpaperapp.util.RenderScriptProvider

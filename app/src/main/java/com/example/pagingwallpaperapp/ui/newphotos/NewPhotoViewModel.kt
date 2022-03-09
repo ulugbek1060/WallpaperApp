@@ -1,37 +1,37 @@
 package com.example.pagingwallpaperapp.ui.newphotos
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.switchMap
+import androidx.lifecycle.asFlow
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import com.example.pagingwallpaperapp.api.UnsplashApi.Companion.POPULAR
+import com.example.pagingwallpaperapp.util.SortOrder
+import com.example.pagingwallpaperapp.util.getSortType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class NewPhotoViewModel @Inject constructor(
-  private val repository: NewPhotoRepository,
-  private val state: SavedStateHandle
+  private val repository: NewPhotoRepository
 ) : ViewModel() {
 
-  private val mutableList = state.getLiveData(CURRENT_STATE_KEY, TEMPORARY_STATE)
+  private val photosFlow = repository.preferences.preferenceFlow
+    .flatMapLatest { sortOrder ->
+      repository.getListOfPhoto(getSortType(sortOrder).first)
+        .asFlow()
+        .cachedIn(viewModelScope)
+    }
 
+  val photos = photosFlow.asLiveData()
 
-  val photos = mutableList.switchMap {
-    repository.getListOfPhoto(it).cachedIn(viewModelScope)
+  suspend fun getOrderFromPreferences(): SortOrder {
+    return repository.preferences.preferenceFlow.first()
   }
 
-  fun changesOrderBy(order: String) {
-    mutableList.value = order
-  }
-
-  companion object {
-    const val CURRENT_STATE_KEY = "current_tate"
-    const val TEMPORARY_STATE = POPULAR
-  }
-
-  sealed class TypeChangesEvent {
-
+  fun updateSortOrder(sortOrder: SortOrder) = viewModelScope.launch {
+    repository.preferences.updateSortOrder(sortOrder)
   }
 }

@@ -11,7 +11,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class AppModule {
+object NetworkModule {
 
   @Provides
   @Singleton
@@ -27,4 +27,5 @@ class AppModule {
   fun provideUnsplashApi(retrofit: Retrofit): UnsplashApi {
     return retrofit.create(UnsplashApi::class.java)
   }
+
 }

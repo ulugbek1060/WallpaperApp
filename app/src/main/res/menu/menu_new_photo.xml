@@ -2,36 +2,33 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
+  <group
+    android:id="@+id/action_sort_order"
+    android:checkableBehavior="single">
+
+    <item
+      android:id="@+id/action_sort_latest"
+      android:title="Latest" />
+
+
+    <item
+      android:id="@+id/action_sort_oldest"
+      android:title="Oldest" />
+
+
+    <item
+      android:id="@+id/action_sort_popular"
+      android:title="Popular" />
+
+  </group>
+
+
   <item
     android:id="@+id/action_to_search"
     android:icon="@drawable/ic_search"
     android:title="search"
     app:actionViewClass="androidx.appcompat.widget.SearchView"
     app:showAsAction="ifRoom|collapseActionView" />
-
-  <item
-    android:icon="@drawable/ic_sort"
-    android:title="Sort by order"
-    app:showAsAction="always">
-
-    <menu>
-
-      <item
-        android:id="@+id/action_sort_latest"
-        android:title="Latest" />
-
-
-      <item
-        android:id="@+id/action_sort_oldest"
-        android:title="Oldest" />
-
-
-      <item
-        android:id="@+id/action_sort_popular"
-        android:title="Popular" />
-
-    </menu>
-
-  </item>
 
 </menu>

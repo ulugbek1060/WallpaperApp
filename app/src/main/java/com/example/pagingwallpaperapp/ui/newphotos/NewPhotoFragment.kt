@@ -8,20 +8,21 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.pagingwallpaperapp.R
-import com.example.pagingwallpaperapp.data.DataPagingAdapter
-import com.example.pagingwallpaperapp.data.PhotoLoadStateAdapter
+import com.example.pagingwallpaperapp.data.adapters.DataPagingAdapter
+import com.example.pagingwallpaperapp.data.adapters.PhotoLoadStateAdapter
 import com.example.pagingwallpaperapp.data.UnsplashPhoto
 import com.example.pagingwallpaperapp.databinding.FragmentNewPhotosBinding
-import com.example.pagingwallpaperapp.api.UnsplashApi.Companion.LATEST
-import com.example.pagingwallpaperapp.api.UnsplashApi.Companion.OLDEST
-import com.example.pagingwallpaperapp.api.UnsplashApi.Companion.POPULAR
 import com.example.pagingwallpaperapp.util.RenderScriptProvider
+import com.example.pagingwallpaperapp.util.SortOrder
+import com.example.pagingwallpaperapp.util.getSortType
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class NewPhotoFragment : Fragment(R.layout.fragment_new_photos),
@@ -60,7 +61,6 @@ class NewPhotoFragment : Fragment(R.layout.fragment_new_photos),
       viewModel.photos.observe(viewLifecycleOwner) {
         dataAdapter.submitData(viewLifecycleOwner.lifecycle, it)
       }
-
     }
 
     dataAdapter.addLoadStateListener { loadState ->
@@ -87,6 +87,23 @@ class NewPhotoFragment : Fragment(R.layout.fragment_new_photos),
 
   override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
     inflater.inflate(R.menu.menu_new_photo, menu)
+
+    viewLifecycleOwner.lifecycleScope.launch {
+      when (val orderFromPreferences = viewModel.getOrderFromPreferences()) {
+        SortOrder.POPULAR -> {
+          menu.findItem(R.id.action_sort_popular).isChecked =
+            getSortType(orderFromPreferences).second
+        }
+        SortOrder.LATEST -> {
+          menu.findItem(R.id.action_sort_latest).isChecked =
+            getSortType(orderFromPreferences).second
+        }
+        SortOrder.OLDEST -> {
+          menu.findItem(R.id.action_sort_oldest).isChecked =
+            getSortType(orderFromPreferences).second
+        }
+      }
+    }
   }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -96,15 +113,18 @@ class NewPhotoFragment : Fragment(R.layout.fragment_new_photos),
         true
       }
       R.id.action_sort_latest -> {
-        changesOnType(LATEST)
+        changesOnType(SortOrder.LATEST)
+        item.isChecked = !item.isChecked
         true
       }
       R.id.action_sort_oldest -> {
-        changesOnType(OLDEST)
+        changesOnType(SortOrder.OLDEST)
+        item.isChecked = !item.isChecked
         true
       }
       R.id.action_sort_popular -> {
-        changesOnType(POPULAR)
+        changesOnType(SortOrder.POPULAR)
+        item.isChecked = !item.isChecked
         true
       }
       else -> {
@@ -113,8 +133,8 @@ class NewPhotoFragment : Fragment(R.layout.fragment_new_photos),
     }
   }
 
-  private fun changesOnType(type: String) {
-    viewModel.changesOrderBy(type)
+  private fun changesOnType(sortOrder: SortOrder) {
+    viewModel.updateSortOrder(sortOrder)
     dataAdapter.refresh()
     binding.recyclerView.scrollToPosition(0)
   }

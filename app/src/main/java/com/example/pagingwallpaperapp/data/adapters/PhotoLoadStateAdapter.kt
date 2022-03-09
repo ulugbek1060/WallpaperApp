@@ -1,4 +1,4 @@
-package com.example.pagingwallpaperapp.data
+package com.example.pagingwallpaperapp.data.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

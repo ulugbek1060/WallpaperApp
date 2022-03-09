@@ -3,15 +3,19 @@ package com.example.pagingwallpaperapp.ui.newphotos
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.liveData
-import com.example.pagingwallpaperapp.data.ActionType
-import com.example.pagingwallpaperapp.data.UnsplashPagingSource
 import com.example.pagingwallpaperapp.api.UnsplashApi
+import com.example.pagingwallpaperapp.data.source.ActionType
+import com.example.pagingwallpaperapp.data.source.UnsplashPagingSource
+import com.example.pagingwallpaperapp.util.PreferenceManager
 import javax.inject.Inject
 
 
 class NewPhotoRepository @Inject constructor(
-  private val unsplashApi: UnsplashApi
+  private val unsplashApi: UnsplashApi,
+  private val preferenceManager: PreferenceManager
 ) {
+
+  val preferences = preferenceManager
 
   fun getListOfPhoto(orderBy: String) = Pager(
     config = PagingConfig(
